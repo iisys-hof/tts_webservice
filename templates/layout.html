@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset=utf-8>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="description" content="TTS INFERENCING" />
+  <meta name="keywords" content="">
+  <meta name="author" content="Johannes Wirth"/>
+    <!--[if IE]>
+        <meta http-equiv=" X-UA-Compatible" content="IE=edge,chrome=1">
+  <![endif]-->
+    <title>iisys Audio Inferencing</title>
+    <link href="{{ url_for('static', filename='css/materialize/materialize.css') }}" type="text/css" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static',filename='tts_results/favicon-neu.ico') }}" type="image/x-icon"/>
+<meta name="theme-color" content="#ffffff">
+</head>
+<body>
+    <div class="container" style="padding-top: 5vh; padding-bottom: 5vh">
+      <div class="row valign-wrapper">
+        <div class="col s6 m3">
+          <a href="https://www.hof-university.de/" class="brand-logo"><img class="responsive-img" src="{{ url_for('static', filename='tts_results/hof_university_logo.png') }}" alt=""/></a>
+        </div>
+        <div class="col s6 m3">
+          <a href="https://smartlytic.de/" class="brand-logo"><img class="responsive-img" src="{{ url_for('static', filename='tts_results/smartlytic_logo.png') }}" alt=""/></a>
+        </div>
+        <div class="col s6 m3">
+      <a href="https://www.ahearo.com/" class="brand-logo"><img class="responsive-img" src="{{ url_for('static', filename='tts_results/ahearo_logo.png') }}" alt=""/></a>
+        </div>
+        <div class="col s6 m3">
+      <a href="https://www.iisys.de/" class="brand-logo"><img class="responsive-img" src="{{ url_for('static', filename='tts_results/iisys-logo-eng.png') }}" alt=""/></a>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+    <main id="app">
+    {% block content %}{% endblock %}
+    </main>
+  </div>
+       <footer class="center"><a name="Bot"></a>
+      </footer>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="{{ url_for('static', filename='js/materialize/bin/materialize.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom/custom.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>iisys Audio Samples Speech Synthesis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <script src="{{ url_for('static',filename='tts_results/jquery/jquery-3.2.1.slim.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='tts_results/popper/popper.mini.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='tts_results/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='tts_results/style.css') }}">
+    <script src="{{ url_for('static',filename='tts_results/bootstrap/js/bootstrap.min.js') }}"></script>
+    <link rel="icon" href="{{ url_for('static',filename='tts_results/favicon-neu.ico') }}" type="image/x-icon"/>
+</head>
+
+<body>
+    <div class="container" style="padding-top: 5vh; padding-bottom: 5vh">
+        <div class="row d-flex flex-wrap align-items-center">
+
+            <div class="col-lg-3 col-md-3 col-xs-12 ">
+                <a class="thumbnail" href="https://www.hof-university.de/">
+                    <img class="img-fluid" src="{{ url_for('static',filename='tts_results/hof_university_logo.png') }}" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-3 col-xs-12 ">
+                <a class="thumbnail" href="https://smartlytic.de/">
+                    <img class="img-fluid" src="{{ url_for('static',filename='tts_results/smartlytic_logo.png') }}" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-3 col-xs-12 ">
+                <a class="thumbnail" href="https://www.ahearo.com/">
+                    <img class="img-fluid" src="{{ url_for('static',filename='tts_results/ahearo_logo.png') }}" alt="">
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-3 col-xs-12 ">
+                <a class="thumbnail" href="https://www.iisys.de/">
+                    <img class="img-fluid" src="{{ url_for('static',filename='tts_results/iisys-logo-eng.png') }}" alt="">
+                </a>
+            </div>
+            
+    </div>
+    <div id="wrapper" class="container" style="padding-top: 5vh;">
+            <h2>iisys Audio Samples for German Speech Synthesis</h2>
+        <h2>Tacotron 2 + MultiBand MelGAN</h2>
+        <h3><a href="">Try It Yourself</a></h3>
+        <div class="accordion" id="accordionExample">
+
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"
+                            aria-expanded="false" aria-controls="collapseOne">
+                            <h3>Bernd Ungerer</h3> <span class="small">(male, 105h, 22 kHz)</span>
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">long sentence</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/bernd/winter7.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">abbr. & numbers</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/bernd/EU7.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">positive example</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/bernd/positive9.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">negative example</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/bernd/negative12.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">vocoder only</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/bernd/vocoderOnly.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">ground truth</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/bernd/ground-truth.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="card">
+                <div class="card-header" id="headingTwo">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo"
+                            aria-expanded="false" aria-controls="collapseTwo">
+                            <h3>Hokuspokus</h3> <span class="small">(female, 55h, 22 kHz)</span>
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">long sentence</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/hokuspokus/winter7.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">abbr. & numbers</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/hokuspokus/EU7.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">positive example</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/hokuspokus/positive9.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">negative example</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/hokuspokus/negative9.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">vocoder only</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/hokuspokus/vocoderOnly.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">ground truth</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/hokuspokus/ground-truth.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            
+            <div class="card">
+                <div class="card-header" id="headingThree">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThree"
+                            aria-expanded="false" aria-controls="collapseThree">
+                            <h3>Thorsten Müller</h3> <span class="small">(male, 22h, 22 kHz)</span>
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">long sentence</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/thorsten/winter7.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">abbr. & numbers</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/thorsten/EU7.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">positive example</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/thorsten/positive14.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">negative example</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/thorsten/negative6.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">vocoder only</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/thorsten/vocoderOnly.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">ground truth</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/thorsten/ground-truth.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card">
+                <div class="card-header" id="headingFour">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFour"
+                            aria-expanded="false" aria-controls="collapseFour">
+                            <h3>Karlsson</h3> <span class="small">(male, 40h, 16 kHz)</span>
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">long sentence</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/karlsson/winter7.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">abbr. & numbers</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/karlsson/EU7.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">positive example</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/karlsson/positive10.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">negative example</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/karlsson/negative11.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">vocoder only</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/karlsson/vocoderOnly.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">ground truth</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/karlsson/ground-truth.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" id="headingFive">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseFive"
+                            aria-expanded="false" aria-controls="collapseFive">
+                            <h3>Eva K.</h3> <span class="small">(female, 29h, 16 kHz)</span>
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">long sentence</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/eva/winter7.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">abbr. & numbers</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/eva/EU7.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">positive example</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/eva/positive15.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">negative example</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/thorsten/negative10.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">vocoder only</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/thorsten/vocoderOnly.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">ground truth</div>
+                            <div class="col-md-auto"><audio controls>
+                                    <source src="{{ url_for('static',filename='tts_results/thorsten/ground-truth.mp3') }}" type="audio/mpeg" />
+                                </audio></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" id="headingSix">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseSix"
+                            aria-expanded="false" aria-controls="collapseSix">
+                            <h3>Rebecca</h3> <span class="small">(female, 24h, 16 kHz)</span>
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordionExample">
+                    <div class="card-body">
+                        
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+</body>
+
+</html>

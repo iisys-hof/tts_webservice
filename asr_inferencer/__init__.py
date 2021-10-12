@@ -1,0 +1,1 @@
+from asr_inferencer.asr_inferencer import inference

@@ -1,19 +1,20 @@
 Text To Speech Inferencing Webservice based on Tacotron 2 and Multi-Band MelGAN, trained using the <a href="https://arxiv.org/abs/2106.06309">HUI-Audio-Corpus-German</a>, evaluated in <a href="https://www.thinkmind.org/index.php?view=article&articleid=centric_2021_2_30_30009">Neural Speech Synthesis in German</a>. Try it out at http://narvi.sysint.iisys.de/projects/tts.
 Requirements:
 - Linux-based OS (Ubuntu 18+, Debian9, Centos7)
-- freetype2
 
 PyTorch may need to be installed separately (see https://pytorch.org/get-started/locally/)
 
 Preparation:
 Create virtual environment, install requirements
-open python interpreter in virtual environment and run:
+Open a python interpreter session in the previously generated virtual environment and run:
 - import nltk
 - nltk.download('punkt')
 
 Before the TTS models can be used, download them from https://opendata.iisys.de/systemintegration/Models/speakers.tar.gz and extract them to tts_inferencer/speakers
 
 Before the STT models can be used, download it from https://opendata.iisys.de/systemintegration/Models/asr_models.zip and extract them to asr_inferencer/models
+
+To start the server in debug settings, run "python3 app.py". Access it at http://127.0.0.1:5000.
 
 Further Notes:
 

@@ -199,15 +199,39 @@ class SentenceToPhoneticSentenceConverter:
 
 converter = SentenceToPhoneticSentenceConverter(str((package_path / "phonemeLibraryGerman.csv")))
 
-def inference(input_text, speaker):
-    voc_config = None
+def inference(input_text, tacotron2_model, vocoder, scaler):
+    tacotron2_model.spc2wav = None  # Disable griffin-lim
+    #vocoder.remove_weight_norm()
 
-    speaker_path = str((package_path / f"speakers/{speaker}/vocoder"))
-
-    with open(speaker_path+"/pre_config.yml") as f:
+    
+    input_text = re.sub(r'[^\w\s\.,;?!äöüß]', " ", input_text)
+    input_text = input_text.replace("’", "'")
+    input_text = input_text.replace('[^\w\s\.,;?!äöüß]',' ')
+    sentence = Sentence(input_text)
+    phonetic_sentence = converter.convert(sentence)
+    with torch.no_grad():
+        text = phonetic_sentence.sentence
+        wav, c, d, *_ = tacotron2_model(text)
+        d = d.cpu()
+        d = scaler.transform(d)
+        wav = vocoder.inference(d)
+        wav = wav.to("cpu")
+        wav_id = "temp/"+str(uuid.uuid4())+".wav"
+        sf.write(wav_id, wav, 22050, "PCM_16")
+        return wav_id, text
+    
+def get_models():
+    tts_models = {}
+    all_speakers = [p.stem for p in Path("./tts_inferencer/speakers").iterdir() if p.is_dir() and p.name != "temp"]
+    for speaker in all_speakers:
+        tts_models[speaker] = {}
+        speaker_path = str((package_path / f"speakers/{speaker}/vocoder"))
+        
+        voc_config = None
+        with open(speaker_path+"/pre_config.yml") as f:
                 voc_config = yaml.load(f, Loader=yaml.Loader)
 
-    text2speech = Text2Speech(
+        tacotron2_model = Text2Speech(
         f"tts_inferencer/speakers/{speaker}/tacotron2/config.yaml", f"tts_inferencer/speakers/{speaker}/tacotron2/train.loss.best.pth",
         device="cpu",
         vocoder_conf=voc_config,
@@ -220,29 +244,17 @@ def inference(input_text, speaker):
         forward_window=3,
         # Only for FastSpeech & FastSpeech2
         #speed_control_alpha=1.0,
+        )
+        tts_models[speaker]["tacotron2_model"] = tacotron2_model
         
-    )
-    text2speech.spc2wav = None  # Disable griffin-lim
-
-    vocoder = load_model(speaker_path+"/checkpoint.pkl").to("cpu").eval()
-    #vocoder.remove_weight_norm()
-
-    scaler = StandardScaler()
-    scaler.mean_ = read_hdf5(speaker_path+"/stats.h5", "mean")
-    scaler.scale_ = read_hdf5(speaker_path+"/stats.h5", "scale")
-    scaler.n_features_in_ = scaler.mean_.shape[0]
-    input_text = re.sub(r'[^\w\s\.,;?!äöüß]', " ", input_text)
-    input_text = input_text.replace("’", "'")
-    input_text = input_text.replace('[^\w\s\.,;?!äöüß]',' ')
-    sentence = Sentence(input_text)
-    phonetic_sentence = converter.convert(sentence)
-    with torch.no_grad():
-        text = phonetic_sentence.sentence
-        wav, c, d, *_ = text2speech(text)
-        d = d.cpu()
-        d = scaler.transform(d)
-        wav = vocoder.inference(d)
-        wav = wav.to("cpu")
-        wav_id = "temp/"+str(uuid.uuid4())+".wav"
-        sf.write(wav_id, wav, 22050, "PCM_16")
-        return wav_id, text
+        vocoder = load_model(speaker_path+"/checkpoint.pkl").to("cpu").eval()
+        tts_models[speaker]["vocoder"] = vocoder
+        
+        scaler = StandardScaler()
+        scaler.mean_ = read_hdf5(speaker_path+"/stats.h5", "mean")
+        scaler.scale_ = read_hdf5(speaker_path+"/stats.h5", "scale")
+        scaler.n_features_in_ = scaler.mean_.shape[0]
+        tts_models[speaker]["scaler"] = scaler
+        
+    
+    return tts_models

@@ -6,3 +6,4 @@ venv*
 temp/*
 record.log
 inferences.txt
+tts_inferencer/speakers/*

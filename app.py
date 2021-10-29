@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request, send_file, after_this_request
+from flask_caching import Cache
 import logging
 from flask.globals import session
 import tts_inferencer
@@ -10,6 +11,15 @@ import uuid
 app = Flask(__name__)
 
 app.secret_key = uuid.uuid4().hex
+cache = Cache()
+
+app.config['CACHE_TYPE'] = 'simple'
+cache.init_app(app)
+
+##init models before app startup
+with app.test_request_context():
+    tts_inferencer.get_models()
+
 
 logging.basicConfig(filename='record.log', level=logging.WARN, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
@@ -36,7 +46,7 @@ def inference_tts():
             pass
         return {"errormessage": "Inferencing ist auf maximal 300 Zeichen beschränkt." }, 500
     try:
-        wav, phonemized_text = tts_inferencer.inference(inference_text, speaker_id)
+        wav, phonemized_text = tts_inferencer.inference(inference_text, **tts_inferencer.get_models()[speaker_id])
         @after_this_request
         def remove_file(response):
             try:

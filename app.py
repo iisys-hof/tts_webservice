@@ -7,6 +7,7 @@ import tts_inferencer
 import asr_inferencer
 from pathlib import Path
 import uuid
+import json
 
 app = Flask(__name__)
 
@@ -32,6 +33,24 @@ def after_request_callback(response):
     session.pop("pending", None)
     return response
 
+@app.route("/getmetadata", methods = ["GET"])
+def get_metadata():
+    wav_identifier = request.args["wav_identifier"].split(".")[0]
+    metadata_file_path = f"temp/{wav_identifier}.txt"
+    metadata = {}
+    with open(metadata_file_path, encoding="UTF-8") as wav_metadata_file:
+        metadata = json.load(wav_metadata_file)
+    
+    @after_this_request
+    def remove_metadata_file(response):
+        try:
+            os.remove(metadata_file_path)
+            return response
+        except Exception as error:
+            app.logger.error("Error removing or closing downloaded file handle", error)
+                
+    return metadata
+
 @app.route("/inferencetts", methods = ["POST"])
 def inference_tts():
     if "pending" in session:
@@ -46,9 +65,9 @@ def inference_tts():
             pass
         return {"errormessage": "Inferencing ist auf maximal 300 Zeichen beschränkt." }, 500
     try:
-        wav, phonemized_text = tts_inferencer.inference(inference_text, **tts_inferencer.get_models()[speaker_id])
+        wav = tts_inferencer.inference(inference_text, **tts_inferencer.get_models()[speaker_id])
         @after_this_request
-        def remove_file(response):
+        def remove_wav_file(response):
             try:
                 os.remove(wav)
                 with open("./inferences.txt","a", encoding="UTF-8") as inferences_file:

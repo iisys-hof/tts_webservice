@@ -63,8 +63,7 @@ $("#inference_tts").on("click", function () {
     contentType: false,
     data: formData,
 
-    success: function (wavestring) {
-      $('#loading_indicator').hide();
+    success: function (wavestring, _, jqXHR) {
       var wavString = wavestring;
       var len = wavString.length;
       var buf = new ArrayBuffer(len);
@@ -75,10 +74,20 @@ $("#inference_tts").on("click", function () {
       var blob = new Blob([view], {type: "audio/x-wav"});
       var audio = document.createElement("AUDIO");
       audio.src = URL.createObjectURL(new Blob([blob], { type: 'audio/x-wav'}));
-
       audio.setAttribute("controls", "controls");
-      $("#tts_inferences").append(audio);
-
+      var waveName = jqXHR.getResponseHeader("content-disposition").replace("\"","").split("/").at(-1);
+      var card = $("<div/>", {"class" : "card"});
+      var cardContent = $("<div/>", {"class" : "card-content"});
+      cardContent.append(audio);
+      $.getJSON( "/getmetadata", {wav_identifier : waveName},  function(jsonData) {
+        cardContent.append("<p>Input: "+formData.get("text_input")+"</p>");
+        cardContent.append("<p>Teilwörter: "+jsonData["subwords"]+"</p>");
+        cardContent.append("<p>Phonemisiert: "+jsonData["phonetic_sentence"]+"</p>");
+      });
+      card.append(cardContent);
+      $("#tts_inferences").append(card);
+      $('#loading_indicator').hide();
+      
     },
 
     error: function (response) {
@@ -92,5 +101,6 @@ $("#inference_tts").on("click", function () {
   }).done(function(){
     $('#loading_indicator').hide();
     $('#inference_tts').removeAttr('disabled');
-  });
+  }
+  );
 });

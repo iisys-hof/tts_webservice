@@ -13,6 +13,8 @@ from nltk.sem.evaluate import Error
 from textblob import TextBlob
 import re
 import uuid
+import json
+
 package_path = Path(__file__).parent.absolute()
 classHighlither = '###'
 endOfClass = '____'
@@ -216,9 +218,13 @@ def inference(input_text, tacotron2_model, vocoder, scaler):
         d = scaler.transform(d)
         wav = vocoder.inference(d)
         wav = wav.to("cpu")
-        wav_id = "temp/"+str(uuid.uuid4())+".wav"
-        sf.write(wav_id, wav, 22050, "PCM_16")
-        return wav_id, text
+        identifier = str(uuid.uuid4())
+        wav_id = "temp/"+ identifier
+        wav_file_name = wav_id + ".wav"
+        sf.write(wav_id + ".wav", wav, 22050, "PCM_16")
+        with open(wav_id + ".txt", "w", encoding="UTF-8") as metadata_file:
+            json.dump({"phonetic_sentence" : text, "subwords" : " ".join(phonetic_sentence.subWords)}, metadata_file)
+        return wav_file_name
     
 def get_models():
     tts_models = {}

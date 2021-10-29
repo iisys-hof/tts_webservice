@@ -23,6 +23,7 @@ espnet==0.10.0
 espnet-tts-frontend==0.0.3
 filelock==3.0.12
 Flask==2.0.1
+Flask-Caching==1.10.1
 g2p-en==2.1.0
 gdown==3.13.0
 gitdb==4.0.7
@@ -91,6 +92,7 @@ tensorboardX==2.4
 textblob==0.15.3
 threadpoolctl==2.2.0
 toml==0.10.2
+torch==1.10.0
 torch-complex==0.2.1
 tqdm==4.61.2
 typeguard==2.12.1

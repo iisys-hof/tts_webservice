@@ -39,7 +39,7 @@ $("#inference_stt").on("click", function () {
       var errorMessage = JSON.parse(response.responseText).errormessage;
       alert(errorMessage);
       $('#loading_indicator').hide();
-    $('#inference_tts').removeAttr('disabled');
+    $('#inference_stt').removeAttr('disabled');
     },
 
   }).done(function(){

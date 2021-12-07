@@ -4,6 +4,9 @@ Requirements:
 - libfreetype6-dev
 - pkg-configure
 - Python >= 3.8
+- python3-dev (for your respective version)
+- libsndfile
+- sox/ffmpeg
 
 PyTorch may need to be installed separately (see https://pytorch.org/get-started/locally/)
 

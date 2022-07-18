@@ -14,6 +14,7 @@ from textblob import TextBlob
 import re
 import uuid
 import json
+import noisereduce as nr
 
 package_path = Path(__file__).parent.absolute()
 classHighlither = '###'
@@ -201,23 +202,28 @@ class SentenceToPhoneticSentenceConverter:
 
 converter = SentenceToPhoneticSentenceConverter(str((package_path / "phonemeLibraryGerman.csv")))
 
-def inference(input_text, tacotron2_model, vocoder, scaler):
-    tacotron2_model.spc2wav = None  # Disable griffin-lim
+def inference(input_text, model, vocoder=None, scaler=None):
+    model.spc2wav = None  # Disable griffin-lim
     #vocoder.remove_weight_norm()
-
-    
     input_text = re.sub(r'[^\w\s\.,;?!äöüß]', " ", input_text)
     input_text = input_text.replace("’", "'")
     input_text = input_text.replace('[^\w\s\.,;?!äöüß]',' ')
     sentence = Sentence(input_text)
     phonetic_sentence = converter.convert(sentence)
+    text = phonetic_sentence.sentence
     with torch.no_grad():
-        text = phonetic_sentence.sentence
-        wav, c, d, *_ = tacotron2_model(text)
-        d = d.cpu()
-        d = scaler.transform(d)
-        wav = vocoder.inference(d)
-        wav = wav.to("cpu")
+        output = model(text)
+        wav = output["wav"]
+        if vocoder is not None:
+            d = output["feat_gen_denorm"]
+            d = d.cpu()
+            d = scaler.transform(d)
+            wav = vocoder.inference(d)
+            wav = torch.reshape(wav, (-1,))
+        wav = wav.to("cpu").numpy()
+        
+        wav = nr.reduce_noise(y=wav, sr=22050, prop_decrease=0.5)
+        
         identifier = str(uuid.uuid4())
         wav_id = "temp/"+ identifier
         wav_file_name = wav_id + ".wav"
@@ -228,39 +234,39 @@ def inference(input_text, tacotron2_model, vocoder, scaler):
     
 def get_models():
     tts_models = {}
-    all_speakers = [p.stem for p in Path("./tts_inferencer/speakers").iterdir() if p.is_dir() and p.name != "temp"]
+    all_speakers = [p for p in Path("./tts_inferencer/speakers").iterdir() if p.is_dir() and p.name != "temp"]
     for speaker in all_speakers:
-        tts_models[speaker] = {}
-        speaker_path = str((package_path / f"speakers/{speaker}/vocoder"))
+        speaker_name = speaker.name
         
-        voc_config = None
-        with open(speaker_path+"/pre_config.yml") as f:
-                voc_config = yaml.load(f, Loader=yaml.Loader)
-
-        tacotron2_model = Text2Speech(
-        f"tts_inferencer/speakers/{speaker}/tacotron2/config.yaml", f"tts_inferencer/speakers/{speaker}/tacotron2/train.loss.best.pth",
-        device="cpu",
-        vocoder_conf=voc_config,
-        # Only for Tacotron 2
-        threshold=0.1,
-        minlenratio=0.08,
-        maxlenratio=20.0,
-        use_att_constraint=False,
-        backward_window=2,
-        forward_window=3,
-        # Only for FastSpeech & FastSpeech2
-        #speed_control_alpha=1.0,
-        )
-        tts_models[speaker]["tacotron2_model"] = tacotron2_model
+        tts_models[speaker_name] = {}
+        speaker_path = str(speaker.absolute())
+        speaker_models = [model for model in speaker.iterdir() if model.is_dir() and model.name != "vocoder"]
+        for speaker_model in speaker_models:
+            tts_models[speaker_name][speaker_model.name] = {"vocoder" : None}
+            with open(f"{speaker_path}/{speaker_model.name}/inference_config.json", encoding="UTF-8") as cf:
+                model_config = json.load(cf)
+            
+            if model_config["vocoder"]:
+                vocoder_path = f"{speaker_path}/vocoder"
+                voc_config = None
+                with open(vocoder_path+"/pre_config.yml") as f:
+                        voc_config = yaml.load(f, Loader=yaml.Loader)
+                vocoder = load_model(vocoder_path+"/checkpoint.pkl").to("cpu").eval()
+                tts_models[speaker_name][speaker_model.name]["vocoder"] = vocoder
+                
+                scaler = StandardScaler()
+                scaler.mean_ = read_hdf5(vocoder_path+"/stats.h5", "mean")
+                scaler.scale_ = read_hdf5(vocoder_path+"/stats.h5", "scale")
+                scaler.n_features_in_ = scaler.mean_.shape[0]
+                tts_models[speaker_name][speaker_model.name]["scaler"] = scaler
         
-        vocoder = load_model(speaker_path+"/checkpoint.pkl").to("cpu").eval()
-        tts_models[speaker]["vocoder"] = vocoder
+            model_path = f"{speaker_path}/{speaker_model.name}"
         
-        scaler = StandardScaler()
-        scaler.mean_ = read_hdf5(speaker_path+"/stats.h5", "mean")
-        scaler.scale_ = read_hdf5(speaker_path+"/stats.h5", "scale")
-        scaler.n_features_in_ = scaler.mean_.shape[0]
-        tts_models[speaker]["scaler"] = scaler
+            model = Text2Speech(
+            f"{model_path}/config.yaml", f"{model_path}/train.loss.best.pth",
+            device="cpu",
+            **model_config["mel_generator_config"]
+            )
+            tts_models[speaker_name][speaker_model.name]["model"] = model
         
-    
     return tts_models

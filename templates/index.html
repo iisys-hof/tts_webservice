@@ -11,12 +11,11 @@
         <div class="col s12">
         <form id="tts_form">
             <div class="input-field col s12">
-                <select id="speaker" name="speaker">
-                    <option value="bernd_ungerer">Bernd Ungerer</option>
-                    <option value="hokuspokus_full">HokusPokus Full</option>
-                    <option value="hokuspokus_clean">HokusPokus Clean</option>
-                    <option value="thorsten_mueller">Thorsten Mueller</option>
-                </select>
+                <select id="model" name="model">
+                    {% for model in models %}
+                        <option value={{ model }}>{{ model }}</option>
+                    {% endfor %}}
+                    </select>
                 <label>Sprecher</label>
             </div>
             <div class="input-field col s12">

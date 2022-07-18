@@ -1,3 +1,6 @@
+# UPDATE JULY 2022
+A VITS model trained on speaker data of "Bernd Ungerer" was added.
+
 Text To Speech Inferencing Webservice based on Tacotron 2 and Multi-Band MelGAN, trained using the <a href="https://arxiv.org/abs/2106.06309">HUI-Audio-Corpus-German</a>, evaluated in <a href="https://www.thinkmind.org/index.php?view=article&articleid=centric_2021_2_30_30009">Neural Speech Synthesis in German</a>. Try it out at http://narvi.sysint.iisys.de/projects/tts.
 Requirements:
 - Linux-based OS (Ubuntu 18+, Debian9, Centos7)

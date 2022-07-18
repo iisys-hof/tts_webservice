@@ -17,9 +17,19 @@ cache = Cache()
 app.config['CACHE_TYPE'] = 'simple'
 cache.init_app(app)
 
+all_models = []
+
+
 ##init models before app startup
 with app.test_request_context():
-    tts_inferencer.get_models()
+    for speaker, models in tts_inferencer.get_models().items():
+        for model in models.keys():
+            if model != "vocoder" and model != "scaler":
+                model_name = f"{speaker}_{model}"
+                all_models.append(model_name)
+
+
+
 
 
 logging.basicConfig(filename='record.log', level=logging.WARN, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
@@ -57,7 +67,8 @@ def inference_tts():
         return {"errormessage": "Only one request at a time is allowed" }, 401
     session["pending"] = 1
     inference_text = request.form["text_input"]
-    speaker_id = request.form["speaker"]
+    model_id = request.form["model"]
+    speaker_name,_,model_name = model_id.rpartition("_")
     if len(inference_text) > 300:
         try:
             session.pop("pending")
@@ -65,7 +76,7 @@ def inference_tts():
             pass
         return {"errormessage": "Inferencing ist auf maximal 300 Zeichen beschränkt." }, 500
     try:
-        wav = tts_inferencer.inference(inference_text, **tts_inferencer.get_models()[speaker_id])
+        wav = tts_inferencer.inference(inference_text, **tts_inferencer.get_models()[speaker_name][model_name])
         @after_this_request
         def remove_wav_file(response):
             try:
@@ -78,7 +89,7 @@ def inference_tts():
         return send_file(wav,mimetype="audio/wav", as_attachment=True, download_name=str(wav)), 200
     except IOError as io_ex:
         app.logger.error(str(io_ex))
-        return {"errormessage": f"Sprecherdaten für {speaker_id} noch nicht verfügbar. Bitte anderen Sprecher wählen."}, 500
+        return {"errormessage": f"Sprecherdaten für {model_id} noch nicht verfügbar. Bitte anderen Sprecher wählen."}, 500
     except RuntimeError as ru_ex:
         app.logger.error(str(ru_ex))
         return {"errormessage": "Kein oder fehlerhafter Text eingegeben."}, 500
@@ -112,7 +123,7 @@ def results():
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template("index.html")
+    return render_template("index.html", models=all_models)
 
 @app.route("/<place>")
 def routeBasic(place):

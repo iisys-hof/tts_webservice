@@ -1,3 +1,8 @@
+#UPDATE SEMPTEMBER 2022
+The phoneme dictionary was extended.
+A VITS model trained on speaker data of "Hokuspokus Clean" was added.
+
+
 # UPDATE JULY 2022
 A VITS model trained on speaker data of "Bernd Ungerer" was added.
 

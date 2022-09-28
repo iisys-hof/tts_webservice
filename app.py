@@ -8,29 +8,29 @@ import asr_inferencer
 from pathlib import Path
 import uuid
 import json
+from multiprocessing import Lock
 
 app = Flask(__name__)
 
 app.secret_key = uuid.uuid4().hex
-cache = Cache()
 
 app.config['CACHE_TYPE'] = 'simple'
-cache.init_app(app)
 
 all_models = []
 
-
+models = None
 ##init models before app startup
 with app.test_request_context():
-    for speaker, models in tts_inferencer.get_models().items():
+    tts_models = tts_inferencer.get_models()
+    for speaker, models in tts_models.items():
         for model in models.keys():
             if model != "vocoder" and model != "scaler":
                 model_name = f"{speaker}_{model}"
                 all_models.append(model_name)
 
+models = tts_models
 
-
-
+proc_lock = Lock()
 
 logging.basicConfig(filename='record.log', level=logging.WARN, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
@@ -76,7 +76,8 @@ def inference_tts():
             pass
         return {"errormessage": "Inferencing ist auf maximal 300 Zeichen beschränkt." }, 500
     try:
-        wav = tts_inferencer.inference(inference_text, **tts_inferencer.get_models()[speaker_name][model_name])
+        with proc_lock:
+            wav = tts_inferencer.inference(inference_text, **models[speaker_name][model_name])
         @after_this_request
         def remove_wav_file(response):
             try:

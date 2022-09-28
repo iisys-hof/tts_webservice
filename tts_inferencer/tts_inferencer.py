@@ -29,6 +29,7 @@ def inference(input_text, model:TtsModel, speaker_id:int, sr:int):
         json.dump({"phonetic_sentence" : input_sentence.sentence, "subwords" : " ".join(input_sentence.subWords)}, metadata_file)
     return wav_file_name
     
+
 def get_models():
     device = "cpu"
     tts_models = {}

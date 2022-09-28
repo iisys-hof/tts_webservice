@@ -16,6 +16,7 @@ $(document).ready(function () {
   $('.tabs').tabs();
   $('#loading_indicator').hide();
   $('textarea#text_input').characterCounter();
+  $('.collapsible').collapsible();
 });
 
 $("#inference_stt").on("click", function () {
